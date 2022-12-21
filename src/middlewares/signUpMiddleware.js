@@ -4,7 +4,7 @@ import signUpSchema from "../schemas/signUpSchema.js";
 export async function signUpValidate(req, res, next) {
   const user = req.body;
 
-  const { errors } = await signUpSchema.validateAsync(user, {
+  const { errors } = signUpSchema.validate(user, {
     abortEarly: false,
   });
   if (errors) {
