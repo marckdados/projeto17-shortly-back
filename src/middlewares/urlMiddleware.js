@@ -1,3 +1,4 @@
+import { response } from "express";
 import connectionDB from "../database/db.js";
 import urlSchema from "../schemas/urlSchema.js";
 
@@ -7,6 +8,14 @@ export async function urlValidate(req, res, next) {
 
   if (!authorization) {
     return res.sendStatus(401);
+  }
+
+  if (
+    !url.url.match(
+      /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
+    )
+  ) {
+    return res.sendStatus(422);
   }
 
   const token = authorization?.replace("Bearer ", "");
@@ -49,6 +58,24 @@ export async function getUrlValidate(req, res, next) {
       return res.sendStatus(404);
     }
     res.locals.urls = url.rows[0];
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}
+
+export async function shortUrlValidate(req, res, next) {
+  const shortUrl = req.params.shortUrl;
+  try {
+    const urlExists = await connectionDB.query(
+      'SELECT * FROM urls WHERE "shortUrl"=$1',
+      [shortUrl]
+    );
+    if (!urlExists.rows[0]) {
+      return res.sendStatus(404);
+    }
+    res.locals.urls = urlExists.rows[0];
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

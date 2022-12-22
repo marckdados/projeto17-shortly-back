@@ -29,3 +29,20 @@ export function getUrlPerId(req, res) {
   const url = res.locals.urls;
   res.status(200).send(url);
 }
+
+export async function openShortUrl(req, res) {
+  const url = res.locals.urls;
+  console.log(url);
+  const visitCount = url.visitCount + 1;
+  try {
+    await connectionDB.query('UPDATE urls SET "visitCount"=$1 WHERE id=$2', [
+      visitCount,
+      url.id,
+    ]);
+    console.log(url.url);
+    res.redirect(url.url);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
