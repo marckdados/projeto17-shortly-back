@@ -82,3 +82,33 @@ export async function shortUrlValidate(req, res, next) {
   }
   next();
 }
+
+export async function deleteUrlValidate(req, res, next) {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    return res.sendStatus(401);
+  }
+  const token = authorization?.replace("Bearer ", "");
+  if (!token) {
+    return res.sendStatus(401);
+  }
+  console.log(token);
+  console.log(id);
+  try {
+    const urlExists = await connectionDB.query(
+      'SELECT urls.id FROM urls JOIN users ON urls."userId"=users.id JOIN sessions ON sessions.id = users.id WHERE urls.id=$1 AND sessions.token =$2',
+      [id, token]
+    );
+    console.log(urlExists.rows[0]);
+    if (!urlExists.rows[0]) {
+      return res.sendStatus(404);
+    }
+    res.locals.urls = urlExists.rows[0];
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}

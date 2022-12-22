@@ -46,3 +46,14 @@ export async function openShortUrl(req, res) {
     res.sendStatus(500);
   }
 }
+
+export async function deleteUrl(req, res) {
+  const url = res.locals.urls;
+  try {
+    await connectionDB.query("DELETE FROM urls WHERE id=$1", [url.id]);
+    res.sendStatus(204);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
