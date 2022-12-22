@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import connectionDB from "../database/db.js";
+
 export async function createUrl(req, res) {
   const urlBody = res.locals.urls;
   const session = res.locals.sessions;
@@ -22,4 +23,9 @@ export async function createUrl(req, res) {
     console.log(error);
     res.sendStatus(500);
   }
+}
+
+export function getUrlPerId(req, res) {
+  const url = res.locals.urls;
+  res.status(200).send(url);
 }

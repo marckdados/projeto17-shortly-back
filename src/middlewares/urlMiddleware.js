@@ -36,3 +36,22 @@ export async function urlValidate(req, res, next) {
   }
   next();
 }
+
+export async function getUrlValidate(req, res, next) {
+  const urlId = req.params.id;
+
+  try {
+    const url = await connectionDB.query(
+      'SELECT id, url, "shortUrl" FROM urls WHERE id=$1',
+      [urlId]
+    );
+    if (!url.rows[0]) {
+      return res.sendStatus(404);
+    }
+    res.locals.urls = url.rows[0];
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  next();
+}
