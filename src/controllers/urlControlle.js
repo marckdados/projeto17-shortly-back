@@ -39,7 +39,6 @@ export async function openShortUrl(req, res) {
       visitCount,
       url.id,
     ]);
-    console.log(url.url);
     res.redirect(url.url);
   } catch (error) {
     console.log(error);

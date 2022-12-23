@@ -1,4 +1,3 @@
-import { response } from "express";
 import connectionDB from "../database/db.js";
 import urlSchema from "../schemas/urlSchema.js";
 
