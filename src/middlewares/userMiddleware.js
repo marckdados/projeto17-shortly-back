@@ -16,6 +16,7 @@ export async function infoUserValidate(req, res, next) {
     );
 
     res.locals.users = userExists.rows[0];
+    res.locals.tokens = token;
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
